@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"Gold-Rate-Analyser/internal/fetcher"
+	"Gold-Rate-Analyser/internal/notifier"
 	"Gold-Rate-Analyser/internal/storage"
 )
 
@@ -26,6 +27,37 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("Snapshot appended successfully")
+
+	message := fmt.Sprintf(
+		`🏆 GOLD MARKET UPDATE
+
+💰 Spot Gold: ₹%.2f/g
+📈 MCX Gold: ₹%.2f/g
+🏅 IBJA Gold: ₹%.2f/g
+
+🌍 LBMA AM: ₹%.2f/g
+🌍 LBMA PM: ₹%.2f/g
+
+🥈 Silver: ₹%.2f/g
+
+🕒 Updated:
+%s
+`,
+		snapshot.Metals.Gold,
+		snapshot.Metals.MCXGold,
+		snapshot.Metals.IBJAGold,
+		snapshot.Metals.LBMAGoldAM,
+		snapshot.Metals.LBMAGoldPM,
+		snapshot.Metals.Silver,
+		snapshot.Timestamps.Metal,
+	)
+
+	err = notifier.SendTelegramMessage(message)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Telegram message sent successfully")
 
 	fmt.Println("========== MARKET SNAPSHOT ==========")
 
