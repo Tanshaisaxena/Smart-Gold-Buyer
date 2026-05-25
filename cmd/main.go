@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"Gold-Rate-Analyser/internal/fetcher"
+	"Gold-Rate-Analyser/internal/storage"
 )
 
 func main() {
@@ -20,25 +21,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = storage.AppendSnapshot(snapshot)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Snapshot appended successfully")
 
 	fmt.Println("========== MARKET SNAPSHOT ==========")
 
 	fmt.Printf("Currency: %s\n", snapshot.Currency)
 	fmt.Printf("Unit: %s\n", snapshot.Unit)
 
-
-
 	fmt.Println("\n--- GOLD ---")
 	fmt.Printf("Spot Gold: %.2f\n", snapshot.Metals.Gold)
-
 
 	fmt.Println("\n--- MCX ---")
 	fmt.Printf("MCX Gold: %.2f\n", snapshot.Metals.MCXGold)
 	fmt.Printf("MCX Gold AM: %.2f\n", snapshot.Metals.MCXGoldAM)
 	fmt.Printf("MCX Gold PM: %.2f\n", snapshot.Metals.MCXGoldPM)
-
-
-
 
 	fmt.Println("\n--- IBJA ---")
 	fmt.Printf("IBJA Gold: %.2f\n", snapshot.Metals.IBJAGold)
