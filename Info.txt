@@ -1,0 +1,169 @@
+2. MCX Gold
+MCX Gold: 15915.60
+Meaning
+
+MCX =
+Multi Commodity Exchange of India
+
+This is:
+
+Indian commodity futures market gold price
+
+Futures Market?
+
+People are trading:
+
+expected future gold prices
+
+NOT necessarily physical gold.
+
+Why Higher Than Spot?
+
+MCX includes:
+
+Indian import duties
+market expectations
+futures premium
+local demand
+INR/USD effects
+
+That’s why:
+
+MCX Gold > Spot Gold
+3. MCX Gold AM / PM
+MCX Gold AM: 15785.70
+MCX Gold PM: 15754.90
+
+These are:
+
+session-specific prices
+morning vs evening market snapshots
+Why Useful?
+
+Can indicate:
+
+intraday momentum
+volatility
+market direction
+
+Example:
+
+AM < PM
+
+might indicate:
+
+gold rose during the day
+
+4. IBJA Gold
+IBJA Gold: 15812.03
+
+IBJA =
+India Bullion and Jewellers Association
+
+This is VERY important for your app.
+
+Why?
+
+IBJA is closer to:
+
+real Indian bullion/jewellery benchmark pricing
+
+This is probably:
+✅ your BEST primary metric
+
+Why Better Than Spot?
+
+Because IBJA reflects:
+
+Indian market realities
+bullion pricing
+domestic market conditions
+
+Your users care about:
+
+“How much will jewellers charge me?”
+
+IBJA is closer to that.
+
+5. LBMA Gold
+LBMA Gold AM: 13813.47
+LBMA Gold PM: 13786.09
+
+LBMA =
+London Bullion Market Association
+
+This is:
+
+global benchmark gold fixing price
+
+Very influential globally.
+
+AM / PM Fix
+
+London historically publishes:
+
+morning benchmark
+evening benchmark
+
+Used worldwide.
+
+Why Important?
+
+LBMA strongly influences:
+
+international gold sentiment
+institutional pricing
+6. Silver
+Silver: 237.63
+
+Global silver market price.
+
+Useful later because:
+
+silver/gold correlation exists
+sometimes silver leads gold movement
+7. Timestamps
+Metal Timestamp: 2026-05-25T05:34:05.503Z
+
+Means:
+
+when metal data was updated
+
+Currency Timestamp: 2026-05-25T05:34:12.813Z
+
+Means:
+
+when forex rates were updated
+
+MOST IMPORTANT QUESTION
+Which Price Should YOUR App Use?
+
+For:
+
+“Should I buy gold in India?”
+
+Use priority:
+
+Priority	Metric
+1	IBJA Gold
+2	MCX Gold
+3	Spot Gold
+4	LBMA
+Recommended Usage
+Use IBJA For
+
+✅ buy recommendations
+✅ monthly low tracking
+✅ user notifications
+
+Use Spot/LBMA For
+
+✅ trend analysis
+✅ AI features
+✅ prediction signals
+
+Use MCX For
+
+✅ short-term movement
+✅ momentum detection
+✅ volatility tracking
