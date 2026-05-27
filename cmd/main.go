@@ -13,9 +13,8 @@ import (
 
 func main() {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
+	if err := godotenv.Load(); err != nil {
+		log.Println(".env not found, using environment variables")
 	}
 
 	snapshot, err := fetcher.GetMarketSnapshot()
