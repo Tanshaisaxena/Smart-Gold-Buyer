@@ -7,10 +7,12 @@ import (
 	"os"
 )
 
-func SendTelegramMessage(message string) error {
+func SendTelegramMessage(
+	chatID int64,
+	message string,
+) error {
 
 	token := os.Getenv("TELEGRAM_BOT_TOKEN")
-	chatID := os.Getenv("TELEGRAM_CHAT_ID")
 
 	apiURL := fmt.Sprintf(
 		"https://api.telegram.org/bot%s/sendMessage",
@@ -19,7 +21,7 @@ func SendTelegramMessage(message string) error {
 
 	data := url.Values{}
 
-	data.Set("chat_id", chatID)
+	data.Set("chat_id", fmt.Sprintf("%d", chatID))
 	data.Set("text", message)
 
 	resp, err := http.PostForm(apiURL, data)

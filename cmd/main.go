@@ -51,9 +51,24 @@ func main() {
 		snapshot.Timestamps.Metal,
 	)
 
-	err = notifier.SendTelegramMessage(message)
+	chatIDs, err := storage.LoadChatIDs()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	for _, chatID := range chatIDs {
+
+		err := notifier.SendTelegramMessage(
+			chatID,
+			message,
+		)
+
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		log.Printf("Message sent to %d\n", chatID)
 	}
 
 	fmt.Println("Telegram message sent successfully")
