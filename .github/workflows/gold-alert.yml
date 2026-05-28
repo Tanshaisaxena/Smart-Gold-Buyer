@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
+      
+      - name: Create data directory
+        run: mkdir -p data
 
       - name: Install dependencies
         run: go mod tidy
