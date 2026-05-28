@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/joho/godotenv"
 
@@ -12,15 +13,19 @@ import (
 )
 
 func main() {
-
+	fmt.Println("[MAIN] Gold Notifier App Started ")
+	fmt.Println("[MAIN] Current time:", time.Now())
+	fmt.Println("[MAIN] Loading Env variables ")
 	if err := godotenv.Load(); err != nil {
-		log.Println(".env not found, using environment variables")
+		log.Println("[MAIN] .env not found, using environment variables")
 	}
+	fmt.Println("[MAIN] Taking Market Snapshot")
 
 	snapshot, err := fetcher.GetMarketSnapshot()
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	err = storage.AppendSnapshot(snapshot)
 	if err != nil {
 		log.Fatal(err)
@@ -55,6 +60,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("[MAIN] Sending telegram message...")
 
 	for _, chatID := range chatIDs {
 
@@ -68,7 +74,7 @@ func main() {
 			continue
 		}
 
-		log.Printf("Message sent to %d\n", chatID)
+		log.Printf("[MAIN] Message sent to %d\n", chatID)
 	}
 
 	fmt.Println("Telegram message sent successfully")
