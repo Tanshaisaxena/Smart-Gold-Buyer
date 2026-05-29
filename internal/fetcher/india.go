@@ -9,13 +9,15 @@ import (
 
 type apiResponse struct {
 	Status   string `json:"status"`
-	Currency string `json:"currency"`
+	Currencies CurrencyData `json:"currencies"`
 	Unit     string `json:"unit"`
 
 	Metals struct {
 		Gold float64 `json:"gold"`
 
-		Silver float64 `json:"silver"`
+		Silver    float64 `json:"silver"`
+		Platinum  float64 `json:"platinum"`
+		Palladium float64 `json:"palladium"`
 
 		LBMAGoldAM float64 `json:"lbma_gold_am"`
 		LBMAGoldPM float64 `json:"lbma_gold_pm"`
@@ -46,6 +48,9 @@ func FetchMarketSnapshot() (*MarketSnapshot, error) {
 	if err != nil {
 		return nil, err
 	}
+	if resp.StatusCode != http.StatusOK {
+	return nil, fmt.Errorf("Api returned status %d", resp.StatusCode)
+}
 	defer resp.Body.Close()
 
 	var apiResp apiResponse
@@ -57,21 +62,23 @@ func FetchMarketSnapshot() (*MarketSnapshot, error) {
 
 	snapshot := &MarketSnapshot{
 		Status:   apiResp.Status,
-		Currency: apiResp.Currency,
+		Currencies: apiResp.Currencies,
 		Unit:     apiResp.Unit,
 
 		Metals: MetalsData{
-			Gold:        apiResp.Metals.Gold,
-			Silver:      apiResp.Metals.Silver,
+			Gold:   apiResp.Metals.Gold,
+			Silver: apiResp.Metals.Silver,
+			Platinum: apiResp.Metals.Platinum,
+			Palladium: apiResp.Metals.Palladium,
 
-			LBMAGoldAM:  apiResp.Metals.LBMAGoldAM,
-			LBMAGoldPM:  apiResp.Metals.LBMAGoldPM,
+			LBMAGoldAM: apiResp.Metals.LBMAGoldAM,
+			LBMAGoldPM: apiResp.Metals.LBMAGoldPM,
 
-			MCXGold:     apiResp.Metals.MCXGold,
-			MCXGoldAM:   apiResp.Metals.MCXGoldAM,
-			MCXGoldPM:   apiResp.Metals.MCXGoldPM,
+			MCXGold:   apiResp.Metals.MCXGold,
+			MCXGoldAM: apiResp.Metals.MCXGoldAM,
+			MCXGoldPM: apiResp.Metals.MCXGoldPM,
 
-			IBJAGold:    apiResp.Metals.IBJAGold,
+			IBJAGold: apiResp.Metals.IBJAGold,
 		},
 
 		Timestamps: TimestampData{

@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"Gold-Rate-Analyser/internal/fetcher"
+	"Gold-Rate-Analyser/internal/message"
 	"Gold-Rate-Analyser/internal/notifier"
 	"Gold-Rate-Analyser/internal/storage"
 )
@@ -32,29 +33,7 @@ func main() {
 	}
 	fmt.Println("Snapshot appended successfully")
 
-	message := fmt.Sprintf(
-		`🏆 GOLD MARKET UPDATE
-
-💰 Spot Gold: ₹%.2f/g
-📈 MCX Gold: ₹%.2f/g
-🏅 IBJA Gold: ₹%.2f/g
-
-🌍 LBMA AM: ₹%.2f/g
-🌍 LBMA PM: ₹%.2f/g
-
-🥈 Silver: ₹%.2f/g
-
-🕒 Updated:
-%s
-`,
-		snapshot.Metals.Gold,
-		snapshot.Metals.MCXGold,
-		snapshot.Metals.IBJAGold,
-		snapshot.Metals.LBMAGoldAM,
-		snapshot.Metals.LBMAGoldPM,
-		snapshot.Metals.Silver,
-		snapshot.Timestamps.Metal,
-	)
+	Message := message.CreateMessage(snapshot)
 
 	chatIDs, err := storage.LoadChatIDs()
 	if err != nil {
@@ -62,11 +41,16 @@ func main() {
 	}
 	fmt.Println("[MAIN] Sending telegram message...")
 
+	if len(chatIDs) == 0 {
+		log.Println("[MAIN] No subscribers found")
+		return
+	}
+
 	for _, chatID := range chatIDs {
 
 		err := notifier.SendTelegramMessage(
 			chatID,
-			message,
+			Message,
 		)
 
 		if err != nil {
@@ -77,7 +61,10 @@ func main() {
 		log.Printf("[MAIN] Message sent to %d\n", chatID)
 	}
 
-	fmt.Println("Telegram message sent successfully")
+	fmt.Printf(
+		"[MAIN] Telegram Message Sent to %d subscribers\n",
+		len(chatIDs),
+	)
 
 	fmt.Println("========== MARKET SNAPSHOT ==========")
 
@@ -99,8 +86,10 @@ func main() {
 	fmt.Printf("LBMA Gold AM: %.2f\n", snapshot.Metals.LBMAGoldAM)
 	fmt.Printf("LBMA Gold PM: %.2f\n", snapshot.Metals.LBMAGoldPM)
 
-	fmt.Println("\n--- SILVER ---")
+	fmt.Println("\n--- Related Metals ---")
 	fmt.Printf("Silver: %.2f\n", snapshot.Metals.Silver)
+	fmt.Printf("Platinium: %.2f\n", snapshot.Metals.Platinum)
+	fmt.Printf("Palladium: %.2f\n", snapshot.Metals.Palladium)
 
 	fmt.Println("\n--- TIMESTAMPS ---")
 	fmt.Printf("Metal Timestamp: %s\n", snapshot.Timestamps.Metal)
@@ -108,3 +97,5 @@ func main() {
 
 	fmt.Println("=====================================")
 }
+
+
