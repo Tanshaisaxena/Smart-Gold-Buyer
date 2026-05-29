@@ -1,12 +1,10 @@
 name: Gold Rate Notifier
 
 on:
-  push:
-   branches:
-    - main
   schedule:
-    - cron: '0 9,18 * * *'
-      timezone: "Asia/Kolkata"
+    - cron: '30 3 * * *'
+    - cron: '30 12 * * *'
+
   workflow_dispatch:
 
 jobs:
@@ -16,14 +14,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
-      
-      - name: Create data directory
-        run: mkdir -p data
+          go-version: '1.24'
 
       - name: Install dependencies
         run: go mod tidy
@@ -34,3 +31,15 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           METALS_API_KEY: ${{ secrets.METALS_API_KEY }}
         run: go run ./cmd/main.go
+
+      - name: Commit snapshots
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add data/
+
+          git diff --staged --quiet || git commit -m "Snapshot $(date -u '+%Y-%m-%d %H:%M UTC')"
+
+      - name: Push changes
+        run: git push
