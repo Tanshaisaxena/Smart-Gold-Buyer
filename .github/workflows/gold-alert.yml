@@ -2,8 +2,7 @@ name: Gold Rate Notifier
 
 on:
   schedule:
-    - cron: '30 3 * * *'
-    - cron: '30 12 * * *'
+    - cron: '0 9,18 * * *'
 
   workflow_dispatch:
 
