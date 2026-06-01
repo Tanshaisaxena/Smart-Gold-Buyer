@@ -3,10 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/slog"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
 
+	"Gold-Rate-Analyser/internal/configs"
+	"Gold-Rate-Analyser/internal/constants"
 	"Gold-Rate-Analyser/internal/fetcher"
 	"Gold-Rate-Analyser/internal/message"
 	"Gold-Rate-Analyser/internal/notifier"
@@ -15,14 +20,48 @@ import (
 
 func main() {
 	fmt.Println("[MAIN] Gold Notifier App Started ")
-	fmt.Println("[MAIN] Current time:", time.Now())
-	fmt.Println("[MAIN] Loading Env variables ")
-	if err := godotenv.Load(); err != nil {
-		log.Println("[MAIN] .env not found, using environment variables")
+	opts := &slog.HandlerOptions{
+		Level:     slog.LevelDebug,
+		AddSource: true,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == slog.TimeKey {
+				return slog.String(
+					slog.TimeKey,
+					a.Value.Time().Format("2006-01-02 15:04:05"),
+				)
+			}
+			return a
+		},
 	}
-	fmt.Println("[MAIN] Taking Market Snapshot")
+	var logger *slog.Logger
+	if strings.ToUpper(os.Getenv("ENV")) == "PROD" {
+		logger = slog.New(slog.NewJSONHandler(os.Stdout, opts))
+	} else {
+		logger = slog.New(slog.NewTextHandler(os.Stdout, opts))
+	}
 
-	snapshot, err := fetcher.GetMarketSnapshot()
+	slog.SetDefault(logger)
+
+	logger.Debug("Test Log")
+
+	logger.Info("System", "Current time", time.Now().UTC())
+	timeinindia, err := time.LoadLocation(constants.Location)
+	if err != nil {
+		logger.Error("ERROR while loading location", "Err", err)
+	}
+	logger.Info("Time Print", "Current time", time.Now().In(timeinindia))
+
+	logger.Info("Loading Env variables ")
+	if err := godotenv.Load(); err != nil {
+		log.Println(".env not found, using environment variables")
+	}
+	Config, err := configs.Configloader()
+	if err != nil {
+		logger.Error("Error loading config: ", "Err", err)
+	}
+	fmt.Println("Taking Market Snapshot")
+
+	snapshot, err := fetcher.GetMarketSnapshot(&Config)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +70,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Snapshot appended successfully")
+	logger.Info("Snapshot appended successfully")
 
 	Message := message.CreateMessage(snapshot)
 
@@ -39,16 +78,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("[MAIN] Sending telegram message...")
+	logger.Info("[MAIN] Sending telegram message...")
 
 	if len(chatIDs) == 0 {
-		log.Println("[MAIN] No subscribers found")
+		logger.Info(" No subscribers found")
 		return
 	}
 
 	for _, chatID := range chatIDs {
 
 		err := notifier.SendTelegramMessage(
+			&Config,
 			chatID,
 			Message,
 		)
@@ -61,8 +101,8 @@ func main() {
 		log.Printf("[MAIN] Message sent to %d\n", chatID)
 	}
 
-	fmt.Printf(
-		"[MAIN] Telegram Message Sent to %d subscribers\n",
+	logger.Info("Message Sent to subscribers",
+		"Telegram Message Sent to %d subscribers\n",
 		len(chatIDs),
 	)
 
@@ -97,5 +137,3 @@ func main() {
 
 	fmt.Println("=====================================")
 }
-
-

@@ -1,17 +1,18 @@
 package fetcher
 
 import (
+	"Gold-Rate-Analyser/internal/configs"
+	"Gold-Rate-Analyser/internal/constants"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 )
 
 type apiResponse struct {
-	Status   string `json:"status"`
+	Status     string       `json:"status"`
 	Currencies CurrencyData `json:"currencies"`
-	Currency string `json:currency`
-	Unit     string `json:"unit"`
+	Currency   string       `json:"currency"`
+	Unit       string       `json:"unit"`
 
 	Metals struct {
 		Gold float64 `json:"gold"`
@@ -36,13 +37,11 @@ type apiResponse struct {
 	} `json:"timestamps"`
 }
 
-func FetchMarketSnapshot() (*MarketSnapshot, error) {
-
-	apiKey := os.Getenv("METALS_API_KEY")
+func FetchMarketSnapshot(config *configs.Config) (*MarketSnapshot, error) {
 
 	url := fmt.Sprintf(
-		"https://api.metals.dev/v1/latest?api_key=%s&currency=INR&unit=g",
-		apiKey,
+		"https://api.metals.dev/v1/latest?api_key=%s&currency=%s&unit=%s",
+		config.Apikey, constants.Currency, constants.Unit,
 	)
 
 	resp, err := http.Get(url)
@@ -50,8 +49,8 @@ func FetchMarketSnapshot() (*MarketSnapshot, error) {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-	return nil, fmt.Errorf("Api returned status %d", resp.StatusCode)
-}
+		return nil, fmt.Errorf("Api returned status %d", resp.StatusCode)
+	}
 	defer resp.Body.Close()
 
 	var apiResp apiResponse
@@ -62,15 +61,15 @@ func FetchMarketSnapshot() (*MarketSnapshot, error) {
 	}
 
 	snapshot := &MarketSnapshot{
-		Status:   apiResp.Status,
-		Currency: apiResp.Currency,
+		Status:     apiResp.Status,
+		Currency:   apiResp.Currency,
 		Currencies: apiResp.Currencies,
-		Unit:     apiResp.Unit,
+		Unit:       apiResp.Unit,
 
 		Metals: MetalsData{
-			Gold:   apiResp.Metals.Gold,
-			Silver: apiResp.Metals.Silver,
-			Platinum: apiResp.Metals.Platinum,
+			Gold:      apiResp.Metals.Gold,
+			Silver:    apiResp.Metals.Silver,
+			Platinum:  apiResp.Metals.Platinum,
 			Palladium: apiResp.Metals.Palladium,
 
 			LBMAGoldAM: apiResp.Metals.LBMAGoldAM,

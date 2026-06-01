@@ -1,22 +1,21 @@
 package notifier
 
 import (
+	"Gold-Rate-Analyser/internal/configs"
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 )
 
 func SendTelegramMessage(
+	config *configs.Config,
 	chatID int64,
 	message string,
 ) error {
 
-	token := os.Getenv("TELEGRAM_BOT_TOKEN")
-
 	apiURL := fmt.Sprintf(
 		"https://api.telegram.org/bot%s/sendMessage",
-		token,
+		config.Telegram_Bot_Token,
 	)
 
 	data := url.Values{}

@@ -1,5 +1,7 @@
 package fetcher
 
-func GetMarketSnapshot() (*MarketSnapshot, error) {
-	return FetchMarketSnapshot()
+import "Gold-Rate-Analyser/internal/configs"
+
+func GetMarketSnapshot(Config *configs.Config) (*MarketSnapshot, error) {
+	return FetchMarketSnapshot(Config)
 }

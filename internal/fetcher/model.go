@@ -1,5 +1,8 @@
 package fetcher
 
+// type Configs struct{
+// 	ApiKey string
+// }
 type MarketSnapshot struct {
 	Status   string
 	Currency string
