@@ -10,6 +10,7 @@ import (
 type apiResponse struct {
 	Status   string `json:"status"`
 	Currencies CurrencyData `json:"currencies"`
+	Currency string `json:currency`
 	Unit     string `json:"unit"`
 
 	Metals struct {
@@ -62,6 +63,7 @@ func FetchMarketSnapshot() (*MarketSnapshot, error) {
 
 	snapshot := &MarketSnapshot{
 		Status:   apiResp.Status,
+		Currency: apiResp.Currency,
 		Currencies: apiResp.Currencies,
 		Unit:     apiResp.Unit,
 
