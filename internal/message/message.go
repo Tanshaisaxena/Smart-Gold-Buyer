@@ -1,11 +1,11 @@
 package message
 
 import (
-	"Gold-Rate-Analyser/internal/fetcher"
+	"Gold-Rate-Analyser/internal/models"
 	"fmt"
 )
 
-func CreateMessage(snapshot *fetcher.MarketSnapshot) string {
+func CreateMessage(snapshot *models.MarketSnapshot) string {
 	message := fmt.Sprintf(
 		`🏆 MARKET UPDATE
 🥇 Gold
