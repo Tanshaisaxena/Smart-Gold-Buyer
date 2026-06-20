@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func SendTelegramMessage(
@@ -23,9 +24,20 @@ func SendTelegramMessage(
 	data.Set("chat_id", fmt.Sprintf("%d", chatID))
 	data.Set("text", message)
 
-	resp, err := http.PostForm(apiURL, data)
+	client := &http.Client{
+		Timeout: 15 * time.Second,
+	}
+
+	resp, err := client.PostForm(
+		apiURL,
+		data,
+	)
+
 	if err != nil {
-		return err
+		return fmt.Errorf(
+			"telegram request failed: %w",
+			err,
+		)
 	}
 
 	defer resp.Body.Close()

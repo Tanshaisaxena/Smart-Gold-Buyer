@@ -6,15 +6,15 @@ import (
 )
 
 type Config struct {
-	Apikey string `json:"METAL_API_KEY"`
+	ALPHA_VANTAGE_API_KEY string `json:"ALPHA_VANTAGE_API_KEY"`
 	Telegram_Bot_Token string `json:"TELEGRAM_BOT_TOKEN"`
 }
 
 func Configloader() (Config, error) {
 	var config Config
-	ApiKeyvar := os.Getenv("METALS_API_KEY")
+	ApiKeyvar := os.Getenv("ALPHA_VANTAGE_API_KEY")
 	if ApiKeyvar != "" {
-		config.Apikey = ApiKeyvar
+		config.ALPHA_VANTAGE_API_KEY = ApiKeyvar
 	} else {
 		return config, fmt.Errorf("[ConfigLoader] Apikey loading failed")
 	}
