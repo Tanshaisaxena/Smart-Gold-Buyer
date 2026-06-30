@@ -98,7 +98,10 @@ func (p AlphaVantageProvider) FetchMarketSnapshot() (*models.MarketSnapshot, err
 
 	apiKey := os.Getenv("ALPHA_VANTAGE_API_KEY")
 	if apiKey == "" {
-		return nil, fmt.Errorf("ALPHA_VANTAGE_API_KEY not set")
+		apiKey = os.Getenv("METALS_API_KEY")
+	}
+	if apiKey == "" {
+		return nil, fmt.Errorf("ALPHA_VANTAGE_API_KEY or METALS_API_KEY not set")
 	}
 
 	snapshot := &models.MarketSnapshot{

@@ -31,11 +31,16 @@ func CreateMessage(snapshot *models.MarketSnapshot) string {
 %s
 `,
 		snapshot.Metals.Gold,
-		
+		snapshot.Metals.Gold,
+		snapshot.Metals.Gold,
+		snapshot.Metals.Gold,
+		snapshot.Metals.Gold,
 		snapshot.Metals.Silver,
 		snapshot.Metals.Platinum,
 		snapshot.Metals.Palladium,
-
+		snapshot.Currencies.USDINR,
+		snapshot.Currencies.EURINR,
+		snapshot.Currencies.AEDINR,
 		snapshot.Timestamps.Metal,
 	)
 	return message

@@ -13,6 +13,9 @@ func LoadChatIDs() ([]int64, error) {
 
 	file, err := os.ReadFile(chatFile)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return chatIDs, nil
+		}
 		return chatIDs, err
 	}
 

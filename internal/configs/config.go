@@ -7,21 +7,35 @@ import (
 
 type Config struct {
 	ALPHA_VANTAGE_API_KEY string `json:"ALPHA_VANTAGE_API_KEY"`
-	Telegram_Bot_Token string `json:"TELEGRAM_BOT_TOKEN"`
+	Telegram_Bot_Token    string `json:"TELEGRAM_BOT_TOKEN"`
+}
+
+func getEnvOrFallback(primary string, fallbacks ...string) string {
+	if value := os.Getenv(primary); value != "" {
+		return value
+	}
+
+	for _, key := range fallbacks {
+		if value := os.Getenv(key); value != "" {
+			return value
+		}
+	}
+
+	return ""
 }
 
 func Configloader() (Config, error) {
 	var config Config
-	ApiKeyvar := os.Getenv("ALPHA_VANTAGE_API_KEY")
-	if ApiKeyvar != "" {
-		config.ALPHA_VANTAGE_API_KEY = ApiKeyvar
+	apiKey := getEnvOrFallback("ALPHA_VANTAGE_API_KEY", "METALS_API_KEY")
+	if apiKey != "" {
+		config.ALPHA_VANTAGE_API_KEY = apiKey
 	} else {
 		return config, fmt.Errorf("[ConfigLoader] Apikey loading failed")
 	}
 
-	Telegram_Bot_Token := os.Getenv("TELEGRAM_BOT_TOKEN")
-	if Telegram_Bot_Token!=""{
-		config.Telegram_Bot_Token=Telegram_Bot_Token
+	telegramBotToken := os.Getenv("TELEGRAM_BOT_TOKEN")
+	if telegramBotToken != "" {
+		config.Telegram_Bot_Token = telegramBotToken
 	} else {
 		return config, fmt.Errorf("[ConfigLoader] Telegram Bot token loading failed")
 	}
